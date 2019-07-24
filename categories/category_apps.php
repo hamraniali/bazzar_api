@@ -1,7 +1,7 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if ($_GET['categoryId'] != '' || !empty($_GET['categoryId'])) {
+    if ($_GET['categoryId'] != '' && !empty($_GET['categoryId'])) {
         include_once '../connection.php';
         $categoryId = mysqli_real_escape_string($conn , $_GET['categoryId']);
         $query = 'SELECT id,imageSrc,name FROM apps WHERE categoryId='.$categoryId;

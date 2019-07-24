@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if (!empty($_GET['appId']) || $_GET['appId'] != null) {
+    if (!empty($_GET['appId']) && $_GET['appId'] != null) {
         include_once '../connection.php';
         $appId = mysqli_real_escape_string($conn , $_GET['appId']);
         $query = 'SELECT * FROM apps WHERE id='.$appId;

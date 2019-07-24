@@ -1,7 +1,7 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!empty($_POST['appId']) || $_POST['appId'] != null) {
+    if (!empty($_POST['appId']) && $_POST['appId'] != null) {
         include_once '../connection.php';
         $appId = mysqli_real_escape_string($conn ,$_POST['appId']);
         $checkExistQuery = 'SELECT * FROM apps WHERE id='.$appId;
@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         else {
             echo json_encode(['message' => 'برنامه پیدا نشد' , 'status' => 'error']);
         }
+        mysqli_close($conn);
     }
     else{
         echo json_encode(['message' => 'برنامه پیدا نشد' , 'status' => 'error']);
