@@ -14,18 +14,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mobile = mysqli_real_escape_string($conn, $_POST['mobile']);
         $password = mysqli_real_escape_string($conn, $_POST['password']);
         $loginDate = date('Y/m/d');
+        $accessToken = openssl_random_pseudo_bytes(100);
+        $accessToken = bin2hex($accessToken);
         $checkExistUserQuery = "SELECT userName,email FROM users WHERE email='$email' OR userName='$userName'";
         $checkExistUser = mysqli_query($conn, $checkExistUserQuery);
         if (mysqli_num_rows($checkExistUser) > 0) {
             echo json_encode(['message' => 'این کاربر وجود دارد', 'status' => 'error']);
         }
         else {
-            $query = "INSERT INTO users (userName, email, mobile, password, loginDate) VALUES ('$userName', '$email', '$mobile', '$password', '$loginDate')";
-            $insert = mysqli_query($conn, $query);
-            if ($insert) {
-                echo json_encode(['message' => 'ثبت نام با موفقیت انجام شد', 'status' => 'success']);
-            } else {
-                echo json_encode(['message' => 'خطا در ثبت اطلاعات', 'status' => 'success']);
+            $checkTokenQuery = "SELECT accessToken FROM users WHERE accessToken='$accessToken'";
+            $checkToken = mysqli_query($conn , $checkTokenQuery);
+            if (mysqli_num_rows($checkToken) > 0) {
+                echo json_encode(['message' => 'خطایی رخ داده است دوباره تلاش کنید ' , 'status' => 'error']);
+            }
+            else{
+                $query = "INSERT INTO users (userName, email, mobile, password, loginDate ,accessToken) VALUES ('$userName', '$email', '$mobile', '$password', '$loginDate','$accessToken')";
+                $insert = mysqli_query($conn, $query);
+                if ($insert) {
+                    echo json_encode(['message' => 'ثبت نام با موفقیت انجام شد', 'status' => 'success' , 'accessToken' => $accessToken]);
+                } else {
+                    echo json_encode(['message' => 'خطا در ثبت اطلاعات', 'status' => 'error']);
+                }
             }
         }
         mysqli_close($conn);
